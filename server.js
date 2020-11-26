@@ -26,17 +26,28 @@ app.get("/api/hello", function (req, res) {
 
 app.get('/api/timestamp/:date?', (req, res) => {
   const { date } = req.params;
+  const dateNow = { unix: new Date().getTime(), utc: new Date().toGMTString() };
+  const dateError = { error : "Invalid Date" };
   if (typeof date === 'undefined') {
-    res.json({ unix: new Date().getTime(), utc: new Date().toGMTString() });
-  }
-    const getDate = date.includes('-') ? date : Number(date);
+    res.json(dateNow);
+  } else {
+    let getDate;
+    if (date.includes('-')) {
+      if (date.replace('-','').split('').length < 6) res.json(dateError); 
+      getDate = date;
+    } else {
+      if (date.toString().split('').length < 5) res.json(dateError);
+      getDate = Number(date);
+    }
+
     const unix = date.includes('-') ? new Date(date).getTime() : Number(date);
     const utc = new Date(getDate).toGMTString();
     if (utc === 'Invalid Date') {
-      res.json({ error : "Invalid Date" });
+      res.json(dateError);
     } else {
       res.json({ unix, utc })
     }
+  }
 });
 
 
