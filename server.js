@@ -32,23 +32,19 @@ app.get('/api/timestamp', (req, res) => {
 app.get('/api/timestamp/:date?', (req, res) => {
   const { date } = req.params;
   const dateError = { error : "Invalid Date" };
-  let getDate;
 
-  if (date.includes('-')) {
-    if (date.replace('-','').split('').length < 6) res.json(dateError); 
-    getDate = date;
+  if (/\d{5,}/.test(date)) {
+    console.log('unix', date)
+    res.json({ unix: parseInt(date), utc: new Date(parseInt(date)).toUTCString() });
   } else {
-    if (date.toString().split('').length < 5) res.json(dateError);
-    getDate = parseInt(date);
+    console.log(new Date(date).valueOf());
+    res.json({ unix: new Date(date).valueOf(), utc: new Date(parseInt(date)).toUTCString() });
   }
 
-  const unix = date.includes('-') ? new Date(date).valueOf() : parseInt(date);
-  const utc = new Date(getDate).toUTCString();
-  if (utc === 'Invalid Date') {
-    res.json(dateError);
-  } else {
-    res.json({ unix, utc })
-  }
+
+  //if (utc === 'Invalid Date') {
+  //  res.json(dateError);
+  //}
 });
 
 
