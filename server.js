@@ -34,7 +34,7 @@ app.get('/api/timestamp/:date?', (req, res) => {
   const dateError = { error : "Invalid Date" };
   let getDate;
 
-  if (/\d{5,}/.test(date)) {
+  if (date.includes('-')) {
     if (date.replace('-','').split('').length < 6) res.json(dateError); 
     getDate = date;
   } else {
