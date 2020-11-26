@@ -24,29 +24,30 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get('/api/timestamp', (req, res) => {
+  const dateNow = { unix: new Date().valueOf(), utc: new Date().toUTCString() };
+  res.json(dateNow);
+});
+
 app.get('/api/timestamp/:date?', (req, res) => {
   const { date } = req.params;
-  const dateNow = { unix: new Date().getTime(), utc: new Date().toGMTString() };
   const dateError = { error : "Invalid Date" };
-  if (typeof date === 'undefined') {
-    res.json(dateNow);
-  } else {
-    let getDate;
-    if (date.includes('-')) {
-      if (date.replace('-','').split('').length < 6) res.json(dateError); 
-      getDate = date;
-    } else {
-      if (date.toString().split('').length < 5) res.json(dateError);
-      getDate = Number(date);
-    }
+  let getDate;
 
-    const unix = date.includes('-') ? new Date(date).getTime() : Number(date);
-    const utc = new Date(getDate).toGMTString();
-    if (utc === 'Invalid Date') {
-      res.json(dateError);
-    } else {
-      res.json({ unix, utc })
-    }
+  if (/\d{5,}/.test(date)) {
+    if (date.replace('-','').split('').length < 6) res.json(dateError); 
+    getDate = date;
+  } else {
+    if (date.toString().split('').length < 5) res.json(dateError);
+    getDate = parseInt(date);
+  }
+
+  const unix = date.includes('-') ? new Date(date).valueOf() : parseInt(date);
+  const utc = new Date(getDate).toUTCString();
+  if (utc === 'Invalid Date') {
+    res.json(dateError);
+  } else {
+    res.json({ unix, utc })
   }
 });
 
