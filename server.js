@@ -32,13 +32,18 @@ app.get('/api/timestamp', (req, res) => {
 app.get('/api/timestamp/:date?', (req, res) => {
   const { date } = req.params;
   const dateError = { error : "Invalid Date" };
+  const testDate = new Date(date);
 
-  if (/\d{5,}/.test(date)) {
-    console.log('unix', date)
-    res.json({ unix: parseInt(date), utc: new Date(parseInt(date)).toUTCString() });
+  if (testDate.toString() === 'Invalid Date') {
+    res.json(dateError);
   } else {
-    console.log(new Date(date).valueOf());
-    res.json({ unix: new Date(date).valueOf(), utc: new Date(parseInt(date)).toUTCString() });
+    if (/\d{5,}/.test(date)) {
+      console.log('unix', date)
+      res.json({ unix: parseInt(date), utc: new Date(parseInt(date)).toUTCString() });
+    } else {
+      console.log(new Date(date).valueOf());
+      res.json({ unix: new Date(date).valueOf(), utc: new Date(parseInt(date)).toUTCString() });
+    }
   }
 
 
@@ -54,3 +59,4 @@ app.get('/api/timestamp/:date?', (req, res) => {
 var listener = app.listen(3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
+
