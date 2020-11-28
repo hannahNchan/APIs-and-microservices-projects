@@ -46,7 +46,16 @@ app.get('/api/timestamp/:date?', (req, res) => {
 
 });
 
+app.get('/api/whoami', (req, res) => {
+  const { 
+    host: ipaddress, 
+    'accept-language': language, 
+    'user-agent': software 
+  } = req.headers;
 
+  res.json({ ipaddress, language, software });
+
+});
 
 // listen for requests :)
 //var listener = app.listen(process.env.PORT, function () {
